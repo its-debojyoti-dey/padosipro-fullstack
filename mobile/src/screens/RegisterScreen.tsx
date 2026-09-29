@@ -79,11 +79,15 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
       });
 
       if (res.data.success) {
-        Alert.alert(
-          'Verification Code Sent',
-          'We have sent a 6-digit OTP code to your email address.',
-          [{ text: 'Continue', onPress: () => onNavigateToVerify(email.trim().toLowerCase()) }]
-        );
+        if (Platform.OS === 'web') {
+          onNavigateToVerify(email.trim().toLowerCase());
+        } else {
+          Alert.alert(
+            'Verification Code Sent',
+            'We have sent a 6-digit OTP code to your email address.',
+            [{ text: 'Continue', onPress: () => onNavigateToVerify(email.trim().toLowerCase()) }]
+          );
+        }
       }
     } catch (err: any) {
       const msg = err.response?.data?.error || 'Registration failed. Please try again.';

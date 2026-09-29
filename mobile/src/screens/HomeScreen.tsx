@@ -66,10 +66,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenTaskSelector }) =>
   };
 
   const handleLogoutPress = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out of PadosiPro?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Log Out', style: 'destructive', onPress: () => logout() },
-    ]);
+    if (Platform.OS === 'web') {
+      logout();
+    } else {
+      Alert.alert('Log Out', 'Are you sure you want to log out of PadosiPro?', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Log Out', style: 'destructive', onPress: () => logout() },
+      ]);
+    }
   };
 
   if (loading) {

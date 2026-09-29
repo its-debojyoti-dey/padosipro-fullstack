@@ -21,16 +21,22 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor to attach Bearer token from SecureStore
+// Request interceptor to attach Bearer token from SecureStore or localStorage
 apiClient.interceptors.request.use(
   async (config) => {
     try {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      let token: string | null = null;
+      if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+        token = localStorage.getItem(TOKEN_KEY);
+      } else {
+        token = await SecureStore.getItemAsync(TOKEN_KEY);
+      }
+
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (err) {
-      console.warn('SecureStore token read error:', err);
+      console.warn('Token read error:', err);
     }
     return config;
   },
@@ -38,12 +44,23 @@ apiClient.interceptors.request.use(
 );
 
 export async function storeSession(token: string, user: any): Promise<void> {
+  if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    return;
+  }
   await SecureStore.setItemAsync(TOKEN_KEY, token);
   await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
 }
 
 export async function getStoredSession(): Promise<{ token: string | null; user: any | null }> {
   try {
+    if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const userStr = localStorage.getItem(USER_KEY);
+      const user = userStr ? JSON.parse(userStr) : null;
+      return { token, user };
+    }
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const userStr = await SecureStore.getItemAsync(USER_KEY);
     const user = userStr ? JSON.parse(userStr) : null;
@@ -56,6 +73,11 @@ export async function getStoredSession(): Promise<{ token: string | null; user: 
 
 export async function clearSession(): Promise<void> {
   try {
+    if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      return;
+    }
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(USER_KEY);
   } catch (err) {
