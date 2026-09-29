@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "PadosiPro",
+    "slug": "padosipro-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#155C49",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.debojyoti.padosipro"
+    },
+    "android": {
+      "package": "com.debojyoti.padosipro",
+      "adaptiveIcon": {
+        "backgroundColor": "#155C49"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

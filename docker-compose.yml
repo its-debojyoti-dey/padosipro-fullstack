@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: padosipro_backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgresql://padosipro_user:padosipro_pass@postgres:5432/padosipro_db?schema=public
+      - JWT_SECRET=padosipro_super_secret_jwt_key_2026_production_grade
+      - JWT_EXPIRES_IN=7d
+      - OTP_EXPIRY_MINUTES=10
+      - OTP_MAX_ATTEMPTS=5
+      - OTP_COOLDOWN_SECONDS=30
+      - LOG_OTP_TO_CONSOLE=true
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: padosipro_postgres
+    environment:
+      POSTGRES_USER: padosipro_user
+      POSTGRES_PASSWORD: padosipro_pass
+      POSTGRES_DB: padosipro_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

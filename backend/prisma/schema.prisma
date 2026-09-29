@@ -1,0 +1,80 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String              @id @default(uuid())
+  email            String              @unique
+  passwordHash     String
+  isVerified       Boolean             @default(false)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  otpRecords       OtpCode[]
+  profile          UserProfile?
+  selectedTasks    UserTaskSelection[]
+}
+
+model OtpCode {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  otpHash     String   // SHA-256 hash of the 6-digit code
+  expiresAt   DateTime // 10 minutes from creation
+  attempts    Int      @default(0) // Max 5 wrong attempts
+  used        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model UserProfile {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName     String
+  mobileNumber String   // Indian format +91 10 digits
+  address      String
+  businessName String?  // Optional: for corporate concierge
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String   @id // e.g. "home", "errands", "health", "travel", "documents", "tech"
+  name        String
+  description String
+  icon        String   // Feather icon name
+  tasks       Task[]
+}
+
+model Task {
+  id           String              @id @default(uuid())
+  categoryId   String
+  category     Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name         String
+  description  String
+  subcategory  String?
+  selections   UserTaskSelection[]
+
+  @@index([categoryId])
+}
+
+model UserTaskSelection {
+  id         String   @id @default(uuid())
+  userId     String
+  taskId     String
+  status     String   @default("ASSIGNED") // "ASSIGNED", "IN_PROGRESS", "COMPLETED"
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId])
+  @@index([userId])
+}
