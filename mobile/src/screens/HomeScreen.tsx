@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { theme } from '../constants/theme';

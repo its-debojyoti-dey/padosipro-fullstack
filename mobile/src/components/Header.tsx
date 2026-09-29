@@ -47,6 +47,9 @@ export const Header: React.FC<HeaderProps> = ({
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={onLogout}
+              accessibilityRole="button"
+              accessibilityLabel="Log out"
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               style={styles.logoutButton}
             >
               <Feather name="log-out" size={20} color={theme.colors.danger} />
