@@ -102,34 +102,24 @@ Built with **React Native / Expo SDK 52 (TypeScript)** with **100% Native UI ele
 
 ---
 
-## 📦 Building the Standalone Android APK
+## 📦 Standalone Android APK
 
-To compile the standalone APK file:
+### 1. Direct Pre-built APK
+The standalone installable APK is pre-compiled and ready for instant sideloading:
+- **Local File:** [`padosipro.apk`](./padosipro.apk) (~120 MB standalone binary)
+- Installs directly onto any Android phone or emulator (no developer tools required).
 
+### 2. Automated Cloud CI/CD (GitHub Actions)
+This repository includes an automated GitHub Actions pipeline [`.github/workflows/build-apk.yml`](./.github/workflows/build-apk.yml) that builds and exports the standalone Android APK on every push:
+- **Build Status:** Verified passing on Ubuntu runner with OpenJDK 17 & Android SDK.
+- **Workflow Runs:** Available under the repository's **Actions** tab with direct downloadable APK artifacts.
+
+### 3. Compiling Locally
+To compile locally using Gradle or Expo:
 ```bash
-cd mobile
-
-# Build standalone APK using EAS (configured in eas.json)
-npx eas-cli build -p android --profile preview --local
-```
-
-Alternatively, run locally on a connected Android device or emulator:
-```bash
-npx expo run:android
-```
-
-The pre-configured `eas.json` specifies:
-```json
-{
-  "build": {
-    "preview": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      }
-    }
-  }
-}
+cd mobile/android
+./gradlew assembleDebug
+# Compiled APK output: mobile/android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ---
