@@ -29,4 +29,4 @@ EXPOSE 4000
 ENV PORT=4000
 ENV NODE_ENV=production
 
-CMD ["sh", "-c", "npx prisma db push && node dist/src/prisma/seed.js && node dist/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/prisma/seed.js && node dist/index.js"]
