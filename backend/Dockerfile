@@ -37,4 +37,4 @@ ENV NODE_ENV=production
 ENV JWT_SECRET="padosipro_super_secret_jwt_key_2026_production_grade"
 ENV LOG_OTP_TO_CONSOLE=true
 
-CMD ["sh", "-c", "npx prisma db push && node dist/src/prisma/seed.js && node dist/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/prisma/seed.js && node dist/index.js"]
