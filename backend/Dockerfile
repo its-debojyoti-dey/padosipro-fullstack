@@ -34,7 +34,6 @@ EXPOSE 4000
 
 ENV PORT=4000
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:./dev.db"
 ENV JWT_SECRET="padosipro_super_secret_jwt_key_2026_production_grade"
 ENV LOG_OTP_TO_CONSOLE=true
 
