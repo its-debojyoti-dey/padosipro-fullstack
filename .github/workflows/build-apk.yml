@@ -36,6 +36,8 @@ jobs:
 
       - name: Build Android APK
         working-directory: mobile/android
+        env:
+          EXPO_PUBLIC_API_URL: https://padosipro-backend.onrender.com/api/v1
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace

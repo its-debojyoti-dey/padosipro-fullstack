@@ -5,13 +5,10 @@ import { Platform } from 'react-native';
 const TOKEN_KEY = 'padosipro_jwt_token';
 const USER_KEY = 'padosipro_user_data';
 
-// Default host based on platform: Android emulator uses 10.0.2.2
-const DEFAULT_API_URL = Platform.select({
-  android: 'http://10.0.2.2:4000/api/v1',
-  default: 'http://localhost:4000/api/v1',
-});
+// Production live backend on Render (with cloud PostgreSQL)
+const PRODUCTION_API_URL = 'https://padosipro-backend.onrender.com/api/v1';
 
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || DEFAULT_API_URL;
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || PRODUCTION_API_URL;
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
