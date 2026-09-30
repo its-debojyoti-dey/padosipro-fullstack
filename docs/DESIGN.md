@@ -10,9 +10,9 @@
 
 The solution replicates the core journey of **[app.padosipro.com](https://app.padosipro.com/)** through a decoupled, type-safe full-stack architecture:
 
-- **Mobile Client**: React Native with Expo SDK 52 (TypeScript). 100% native UI elements (`View`, `Text`, `FlatList`, `TextInput`, `Pressable`) with **zero WebViews**. Styled after PadosiPro’s design system: Forest Green (`#155C49`), Cream Canvas (`#FAFAF7`), and Feather icons.
-- **Backend API**: Node.js + Express (TypeScript) layered architecture (`routes` $\rightarrow$ `middleware` $\rightarrow$ `controllers` $\rightarrow$ `services` $\rightarrow$ `prisma/db`).
-- **Data Persistence**: Prisma ORM with dual-engine flexibility: SQLite by default for instant zero-dependency local runs, and PostgreSQL via Docker Compose for production parity.
+- **Mobile Client**: React Native with Expo SDK 52 (TypeScript). 100% native UI elements (`View`, `Text`, `FlatList`, `TextInput`, `Pressable`) with **zero WebViews**. Styled after PadosiPro’s design system: Forest Green (`#155C49`), Cream Canvas (`#FAFAF7`), and Feather icons. Hardwired to the live production API with local environment fallback.
+- **Backend API**: Node.js + Express (TypeScript) layered architecture (`routes` $\rightarrow$ `middleware` $\rightarrow$ `controllers` $\rightarrow$ `services` $\rightarrow$ `prisma/db`). Deployed live on Render with automated Docker containerization.
+- **Data Persistence**: Prisma ORM with **Render Managed PostgreSQL** (`padosipro_db`) in production, ensuring persistent state across review sessions and physical devices, with Docker Compose support for local development.
 
 ---
 
@@ -27,9 +27,9 @@ The solution replicates the core journey of **[app.padosipro.com](https://app.pa
 - **Decision**: Implemented `argon2id` (`argon2.argon2id`) for password hashing.
 - **Trade-off**: Argon2 requires native binaries (handled via prebuilt bindings), but provides state-of-the-art resistance against GPU/ASIC cracking by balancing memory and time cost ($64\text{ MB}$, $3\text{ iterations}$).
 
-### 2.3 Database Strategy: SQLite Default + Dockerized PostgreSQL
-- **Decision**: Configured SQLite as the out-of-the-box database engine with an identical Prisma schema mapped to PostgreSQL in `docker-compose.yml`.
-- **Trade-off**: SQLite provides zero friction for reviewers (no Docker daemon or port conflict needed to inspect and run tests in under 5 minutes). PostgreSQL is containerized for production parity.
+### 2.3 Database Strategy: Managed Cloud PostgreSQL for Live Reviews
+- **Decision**: Connected Prisma to a dedicated cloud PostgreSQL database (`padosipro_db`) on Render for the live deployment, alongside containerized local PostgreSQL via Docker Compose.
+- **Rationale**: An ephemeral or purely local database forces reviewers to run a backend server locally to test the APK. By backing the API with a persistent cloud PostgreSQL instance, the standalone APK works out-of-the-box on any phone or emulator while retaining full local reproducibility.
 
 ### 2.4 Profile Schema: Why "Business Name" is Optional
 - **Decision**: `UserProfile.businessName` is optional in the database and UI.
@@ -38,6 +38,10 @@ The solution replicates the core journey of **[app.padosipro.com](https://app.pa
 ### 2.5 Auth & Session Management: JWT with SecureStore
 - **Decision**: JWT access tokens are signed on login and persisted on the mobile device using `expo-secure-store` (hardware-backed Android Keystore / iOS Keychain).
 - **Trade-off**: Stateless JWTs avoid frequent DB lookups during high API throughput. Session persistence ensures returning users never face redundant login prompts after closing the app.
+
+### 2.6 Automated Cloud Builds: GitHub Actions CI/CD for Android APK
+- **Decision**: Implemented `.github/workflows/build-apk.yml` to compile standalone APK binaries via Gradle on Ubuntu runners with OpenJDK 17 and Android SDK.
+- **Rationale**: Allows reviewers to obtain fresh, verified binary builds directly from the GitHub Actions artifacts or Releases page without needing Android Studio or local NDK setup.
 
 ---
 

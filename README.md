@@ -4,40 +4,55 @@ A production-grade native mobile application and backend API replicating the fir
 
 ---
 
-## 🚀 Quick Start (Under 5 Minutes)
+## 🌐 Live Production Links & Instant Review (< 1 Minute)
 
-### Option A: Standard Local Run (Recommended for Reviewers)
-
-```bash
-# 1. Clone & Enter Backend
-cd padosipro-fullstack/backend
-
-# 2. Install dependencies & initialize database (SQLite zero-setup)
-npm install
-npx prisma db push
-npm run db:seed
-
-# 3. Start Backend API (runs on http://localhost:4000)
-npm run dev
-```
-
-In a second terminal:
-```bash
-# 4. Enter Mobile Client
-cd padosipro-fullstack/mobile
-
-# 5. Install dependencies & start Expo
-npm install
-npx expo start
-```
-*Press `a` to open in Android Emulator, `w` for Web, or scan QR code with Expo Go on your mobile device.*
+For the quickest review without running any local servers:
+- **Live Cloud Backend API:** [`https://padosipro-backend.onrender.com/api/v1`](https://padosipro-backend.onrender.com/api/v1)
+- **Health Check Endpoint:** [`https://padosipro-backend.onrender.com/api/v1/health`](https://padosipro-backend.onrender.com/api/v1/health) *(Returns `{"status":"ok","service":"padosipro-backend"}`)*
+- **Managed Cloud Database:** Render Managed PostgreSQL (`padosipro_db`)
+- **Direct Standalone APK:** [Download `padosipro.apk` (GitHub Release v1.0.0)](https://github.com/its-debojyoti-dey/padosipro-fullstack/releases/tag/v1.0.0)  
+  *(The pre-compiled APK is hardwired to the live cloud backend — install on any Android phone or emulator and test immediately).*
 
 ---
 
-### Option B: Docker Compose (PostgreSQL)
+## 🚀 Running Locally (< 5 Minutes)
+
+### Option A: Local Mobile Client with Live Cloud Backend (Recommended)
+You can run the frontend locally while connecting directly to the live cloud backend:
+```bash
+cd mobile
+npm install
+npx expo start
+```
+*Press `w` to open in your browser, `a` for Android Emulator, or scan the QR code with Expo Go.*
+
+---
+
+### Option B: Full Local Stack (Backend + Mobile)
+
+In Terminal 1 (Backend):
+```bash
+cd backend
+npm install
+npx prisma db push
+npm run db:seed
+npm run dev
+```
+*Runs backend on `http://localhost:4000`.*
+
+In Terminal 2 (Mobile Client):
+```bash
+cd mobile
+npm install
+# Point to local backend
+npx expo start
+```
+
+---
+
+### Option C: Docker Compose (PostgreSQL)
 
 ```bash
-cd padosipro-fullstack
 docker compose up --build
 ```
 *Starts containerized Node.js API and PostgreSQL database on port 4000 and 5432.*
